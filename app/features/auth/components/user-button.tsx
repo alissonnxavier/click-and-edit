@@ -18,7 +18,7 @@ import { useRouter } from "next/navigation";
 
 
 import React from 'react'
-import { useCurrentUser } from "../api/user-current-user";
+import { useCurrentUser } from "../api/use-current-user";
 
 const UserButton = () => {
 

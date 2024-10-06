@@ -2,6 +2,7 @@
 
 
 import { FormInput } from "@/components/form-input";
+import UserButton from "./features/auth/components/user-button";
 import { ElementRef, useRef, useState } from "react";
 import { useEventListener } from "usehooks-ts";
 
@@ -73,12 +74,12 @@ export default function Home() {
       ) : (
         <div
           onClick={enableEditing}
-          className="text-sm px-2.5 py-1 h-7 font-medium border-transparent cursor-pointer"
+          className="text-green-500 text-sm px-2.5 py-1 h-7 font-medium border-transparent cursor-pointer"
         >
           {title}
         </div>
       )}
-
+      <UserButton />
     </div>
   );
 }
