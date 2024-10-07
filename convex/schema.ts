@@ -9,7 +9,7 @@ const schema = defineSchema({
         code: v.string(),
         description: v.string(),
         amount: v.string(),
-        image: v.optional(v.id("_storage")),
+        image: v.array(v.string()),
     }),
 });
 

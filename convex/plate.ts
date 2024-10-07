@@ -8,7 +8,7 @@ export const create = mutation({
         code: v.string(),
         description: v.string(),
         amount: v.string(),
-        image: v.optional(v.id("_storage")),
+        image: v.array(v.string()),
     },
     handler: async (ctx, args) => {
         const userId = await auth.getUserId(ctx);
