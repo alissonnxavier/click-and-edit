@@ -4,6 +4,13 @@ import { v } from "convex/values";
 
 const schema = defineSchema({
     ...authTables,
+    plateRegister: defineTable({
+        userId: v.id("users"),
+        code: v.string(),
+        description: v.string(),
+        amount: v.string(),
+        image: v.optional(v.id("_storage")),
+    }),
 });
 
 export default schema;

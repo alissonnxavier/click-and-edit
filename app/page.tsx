@@ -5,6 +5,7 @@ import { FormInput } from "@/components/form-input";
 import UserButton from "./features/auth/components/user-button";
 import { ElementRef, useRef, useState } from "react";
 import { useEventListener } from "usehooks-ts";
+import FormTrigger from "@/components/forms/form-trigger";
 
 
 export default function Home() {
@@ -52,34 +53,8 @@ export default function Home() {
 
 
   return (
-    <div className="flex items-center justify-start h-full w-full bg-[#f1f2f4] rounded-md shadow-none pb-2 ">
-      {isEditing ? (
-        <form
-          ref={formRef}
-          action={handleSubmit}
-          className="flex justify-center items-center"
-        >
-          <input hidden id="id" name="id" />
-          <input hidden id="boardId" name="boardId" />
-          <FormInput
-            ref={inputRef}
-            onBlur={onBlur}
-            id='title'
-            placeholder="Enter list title..."
-            defaultValue="first title"
-            className="ml-auto text-sm px-[7px] py-1 h-7 font-medium border-transparent focus:border-input transition truncate bg-transparent focus:bg-white shadow-none cursor-pointer"
-          />
-          <button type="submit" hidden />
-        </form>
-      ) : (
-        <div
-          onClick={enableEditing}
-          className="text-green-500 text-sm px-2.5 py-1 h-7 font-medium border-transparent cursor-pointer"
-        >
-          {title}
-        </div>
-      )}
-      <UserButton />
+    <div className="flex items-center justify-center h-full w-full bg-[#f1f2f4] rounded-md shadow-none pb-2 ">
+      <FormTrigger />
     </div>
   );
 }
