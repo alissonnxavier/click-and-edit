@@ -7,8 +7,14 @@ const schema = defineSchema({
     plateRegister: defineTable({
         userId: v.id("users"),
         code: v.string(),
-        description: v.string(),
-        amount: v.string(),
+        supplier: v.string(),
+        lot: v.string(),
+        invoice: v.string(),
+        rir: v.string(),
+        hardnessOne: v.string(),
+        hardnessTwo: v.string(),
+        hardnessThree: v.string(),
+        qualityMember: v.string(),
         image: v.array(v.string()),
     }),
 });

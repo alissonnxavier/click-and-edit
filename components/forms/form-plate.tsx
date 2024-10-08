@@ -24,7 +24,6 @@ import {
     FormItem,
     FormLabel,
 } from "@/components/ui/form"
-import toast from 'react-hot-toast';
 import { useRouter } from 'next/navigation';
 import { useCallback, useEffect, useState } from 'react';
 import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
@@ -33,6 +32,10 @@ import { ImagePlus } from 'lucide-react';
 import Compressor from 'compressorjs';
 import { RiseLoader } from 'react-spinners';
 import { Tip } from '@/components/ui/tip';
+import { useCreateRegisterPlate } from '@/app/features/registers/api/use-create-plate-register';
+import { useGenerateUploadUrl } from '@/app/features/upload/api/use-generate-upload-url';
+import { Id } from '@/convex/_generated/dataModel';
+import { toast } from 'sonner';
 
 
 const formSchema = z.object({
@@ -42,9 +45,9 @@ const formSchema = z.object({
     lot: z.string().min(2),
     invoice: z.string().min(1),
     rir: z.string().min(1),
-    hbOne: z.string().min(1),
-    hbTwo: z.string().min(1),
-    hbThree: z.string().min(1),
+    hardnessOne: z.string().min(1),
+    hardnessTwo: z.string().min(1),
+    hardnessThree: z.string().min(1),
     inspector: z.string().min(3, { message: 'Atualize a pagina' }),
     images: z.any(z.any()),
     imagesOldName: z.any().default([]),
@@ -62,56 +65,24 @@ export const FormPlate: React.FC<FormPlateProps> = ({ tab, id }) => {
     const form = useForm<SteelPlateFormValues>({
         resolver: zodResolver(formSchema),
     });
-    const router = useRouter();
-    const { data: session } = {
-        data: {
-            session: {
-                user: {
-                    name: 'alisson',
-                }
-            },
-        }
-    }
+
     const [inspectionData, setInspectionData] = useState([] as any);
     const [inspetorName, setInspectorName] = useState('');
     const [base64, setBase64] = useState([]);
     const [compressedImages, setCompressedImages] = useState([]);
     const [isLoading, setIsLoading] = useState(false);
+    const [images, setImages] = useState<FileList | []>([]);
+    const [imageCount, setImageCount] = useState<Number | null>(null);
+    let imagesId = [];
 
+    const { mutate: registerPlate, isPending: isRegisterPending } = useCreateRegisterPlate();
+    const { mutate: generateUploadUrl, isPending: isUploading } = useGenerateUploadUrl();
 
     const handleDrop = useCallback(async (files: any) => {
-        const file = files[0];
-        let array = [] as any;
-        let compressedImages = [] as any;
-        try {
-            for (let i = 0; i < files.length; i++) {
-                const readerPreviwe = new FileReader();
-                readerPreviwe.readAsDataURL(files[i]);
-                readerPreviwe.onload = (e) => {
-                    array.push(e?.target?.result)
-                }
-                setBase64(array);
-            };
-            for (let i = 0; i < files.length; i++) {
-                new Compressor(files[i], {
-                    quality: 0.4,
-                    success: async (compressedFile) => {
-                        const reader = new FileReader();
-                        reader.readAsDataURL(compressedFile);
-                        reader.onload = async (e) => {
-                            compressedImages.push(e?.target?.result)
-                            setCompressedImages(compressedImages);
-                        }
-                        /* compressedImages.push(compressedFile)
-                        setCompressedImages(compressedImages); */
-                    },
-                });
-            }
+        setImages(files)
+    }, []);
 
-        } catch (error) {
-            console.log(error);
-        }
-    }, [setBase64, setCompressedImages]);
+    console.log(form.getValues("rir"));
 
     const { acceptedFiles, getRootProps, getInputProps } = useDropzone({
         onDrop: handleDrop,
@@ -125,116 +96,73 @@ export const FormPlate: React.FC<FormPlateProps> = ({ tab, id }) => {
     });
 
     useEffect(() => {
-
-        setInspectorName('alisson');
         form.setValue('inspector', inspetorName);
-    }, [setInspectorName, session, inspetorName, form, id]);
+        console.log(form.getValues("rir"))
+    }, [setInspectorName, inspetorName, form, id]);
 
-    const onSubmit = async (formData: SteelPlateFormValues) => {
+
+
+    const onSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
+        event.preventDefault();
+
+        form.getFieldState('item').error
+        form.getFieldState('lot').error?.message
+
         try {
+            if (images) {
+                for (let i = 0; images.length > i; i++) {
 
-            if (base64.length < 1) {
-                toast.error('Carregue as imagens!!!', {
-                    style: {
-                        border: '3px solid white',
-                        padding: '30px',
-                        color: 'white',
-                        backgroundColor: '#a80a1f',
-                        borderRadius: '50%',
-                        boxShadow: '20px 20px 50px grey',
+                    const url = await generateUploadUrl({}, { throwError: true });
 
-                    },
-                    iconTheme: {
-                        primary: 'white',
-                        secondary: '#a80a1f',
-                    },
-                });
-            } else {
-                setIsLoading(true);
-                if (inspectionData.length > 0) {
-                    const res = await axios.post('/api/edit/plate', formData);
-                    toast.success('Registro editado com sucesso!!!', {
-                        style: {
-                            border: '3px solid white',
-                            padding: '30px',
-                            color: 'white',
-                            backgroundColor: '#706d0c',
-                            borderRadius: '50%',
-                            boxShadow: '20px 20px 50px grey',
-                        },
-                        iconTheme: {
-                            primary: 'white',
-                            secondary: '#706d0c',
-                        },
+                    if (!url) {
+                        throw new Error("URL not found!")
+                    }
+
+                    const result = await fetch(url, {
+                        method: "POST",
+                        headers: { "Content-type": images[i]!.type },
+                        body: images[i],
                     });
-                    setInspectionData([]);
-                } else {
-                    setIsLoading(true);
-                    const res = await axios.post('/api/register/plate', formData);
-                    toast.success('Registro salvo com sucesso!!!', {
-                        style: {
-                            border: '3px solid white',
-                            padding: '30px',
-                            color: 'white',
-                            backgroundColor: '#109c2e',
-                            borderRadius: '50%',
-                            boxShadow: '20px 20px 50px grey',
-                        },
-                        iconTheme: {
-                            primary: 'white',
-                            secondary: '#109c2e',
-                        },
-                    });
-                }
-                form.setValue('item', '');
-                form.setValue('supplier', '');
-                form.setValue('lot', '');
-                form.setValue('invoice', '');
-                form.setValue('lot', '');
-                form.setValue('rir', '');
-                form.setValue('hbOne', '');
-                form.setValue('hbTwo', '');
-                form.setValue('hbThree', '');
-                setBase64([]);
-                setCompressedImages([]);
+
+                    const { storageId } = await result.json();
+
+                    setImageCount(i + 1);
+
+                    imagesId.push(storageId);
+                };
             }
+
+            
+
+            registerPlate({
+                code: form.getValues('item'),
+                //@ts-ignore
+                supplier: form.getValues('supplier'),
+                lot: form.getValues('lot'),
+                invoice: form.getValues('invoice'),
+                rir: form.getValues('rir'),
+                hardnessOne: form.getValues('hardnessOne'),
+                hardnessTwo: form.getValues('hardnessTwo'),
+                hardnessThree: form.getValues('hardnessThree'),
+                qualityMember: 'alisson',
+                image: imagesId as any,
+            }, {
+                onSuccess: () => {
+                    toast.success('Register created!')
+                },
+                onError: () => {
+                    toast.error('Register failed!')
+                }
+            })
         } catch (error) {
-            console.log(error);
-            toast.error('Parece que algo está errado!!!', {
-                style: {
-                    border: '3px solid white',
-                    padding: '30px',
-                    color: 'white',
-                    backgroundColor: '#a80a1f',
-                    borderRadius: '50%',
-                    boxShadow: '20px 20px 50px grey',
-                },
-                iconTheme: {
-                    primary: 'white',
-                    secondary: '#a80a1f',
-                },
-            });
-            setIsLoading(false);
-        } finally {
-            setIsLoading(false);
-        }
-    }
-
-    const setPhotos = () => {
-        if (compressedImages.length < 1) {
-            form.setValue('images', base64)
-            console.log('base64 image was seted');
-
-        } else {
-            form.setValue('images', compressedImages)
-            console.log('compressed image was seted')
+            console.log('error')
         }
     }
 
     return (
         <>
             <Form {...form}>
-                <form onSubmit={form.handleSubmit(onSubmit)} >
+                <form  onSubmit={onSubmit}>
                     <TabsContent value={tab}>
                         <Card>
                             <CardHeader>
@@ -354,7 +282,7 @@ export const FormPlate: React.FC<FormPlateProps> = ({ tab, id }) => {
                                             <div className='flex gap-2'>
                                                 <FormField
                                                     control={form.control}
-                                                    name='hbOne'
+                                                    name='hardnessOne'
                                                     render={({ field }) => (
                                                         <FormItem>
                                                             <FormLabel className='flex justify-center pt-[10px]'><Badge variant='destructive'>HB:</Badge></FormLabel>
@@ -371,7 +299,7 @@ export const FormPlate: React.FC<FormPlateProps> = ({ tab, id }) => {
                                                 />
                                                 <FormField
                                                     control={form.control}
-                                                    name='hbTwo'
+                                                    name='hardnessTwo'
                                                     render={({ field }) => (
                                                         <FormItem>
                                                             <FormLabel className='flex justify-center pt-[10px]'><Badge variant='destructive'>HB:</Badge></FormLabel>
@@ -388,7 +316,7 @@ export const FormPlate: React.FC<FormPlateProps> = ({ tab, id }) => {
                                                 />
                                                 <FormField
                                                     control={form.control}
-                                                    name='hbThree'
+                                                    name='hardnessThree'
                                                     render={({ field }) => (
                                                         <FormItem>
                                                             <FormLabel className='flex justify-center pt-[10px]'><Badge variant='destructive'>HB:</Badge></FormLabel>
@@ -430,18 +358,19 @@ export const FormPlate: React.FC<FormPlateProps> = ({ tab, id }) => {
                                                     }
                                                 />
                                                 <div className='animate-pulse'>
-                                                    {5 - base64.length < 1 ? "" : `+${5 - base64.length}`}
+                                                    {5 - images.length < 1 ? "" : `+${5 - images.length}`}
                                                 </div>
                                             </div>
                                         </div>
                                         <aside>
                                             <ul className='flex justify-center align-middle items-center'>
                                                 {
-                                                    base64.map((img, index) => (
+                                                    //@ts-ignore
+                                                    images.map((img: File, index: string) => (
                                                         <Image
                                                             className='m-1 aspect-square object-cover rounded hover:scale-150 transition'
                                                             key={index}
-                                                            src={img}
+                                                            src={URL.createObjectURL(img)}
                                                             height={38}
                                                             width={38}
                                                             alt='uploaded image'
@@ -456,14 +385,9 @@ export const FormPlate: React.FC<FormPlateProps> = ({ tab, id }) => {
                             <CardFooter>
                                 <div className='flex w-[390px] justify-center '>
                                     <Button
-                                        disabled={isLoading}
+                                        disabled={isRegisterPending || isUploading}
                                         type='submit'
                                         className='flex w-[320px] '
-                                        onClick={() => {
-                                            form.setValue('id', '11');
-                                            form.setValue('originalInspector', '11');
-                                            setPhotos();
-                                        }}
                                     >
                                         {isLoading ? <div><RiseLoader color="#f5f7fa" size={5} /></div> : 'Registrar'}
                                     </Button>

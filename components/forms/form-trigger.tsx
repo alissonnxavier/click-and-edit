@@ -19,7 +19,7 @@ const FormTrigger = () => {
                         Chapas
                     </TabsTrigger>
                 </TabsList>
-                <FormTest />
+                <FormPlate tab="Plate" id="Plate" />
             </Tabs>
         </div>
     )

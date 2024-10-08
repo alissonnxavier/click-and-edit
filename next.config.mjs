@@ -1,4 +1,10 @@
 /** @type {import('next').NextConfig} */
-const nextConfig = {};
+const nextConfig = {
+    images: {
+        domains: [
+            'colorless-camel-822.convex.cloud'
+        ]
+    }
+};
 
 export default nextConfig;
