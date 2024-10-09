@@ -19,7 +19,7 @@ export const Tip: React.FC<TipProps> = ({ content, message }) => {
                     {content}
                 </TooltipTrigger>
                 <TooltipContent
-                    className="bg-green-900  text-green-300  border-lime-200 rounded-br-lg border-spacing-9"
+                    className="bg-green-900 p-4 text-green-300 text-1xl  border-lime-200 rounded-br-lg border-spacing-9"
                 >
                     <div className="border-lime-200 border-spacing-5">
                         {message}

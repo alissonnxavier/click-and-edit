@@ -3,6 +3,7 @@ import localFont from "next/font/local";
 import { ConvexAuthNextjsServerProvider } from "@convex-dev/auth/nextjs/server";
 import { ConvexClientProvider } from "@/components/convex-client-provider";
 import { Toaster } from "@/components/ui/sonner";
+import { Toaster as HotToaster } from "react-hot-toast";
 import { siteConfig } from "@/config/site";
 import "./globals.css";
 import { DrawerPlateProvider } from "@/providers/drawer-plate-provider";
@@ -44,8 +45,12 @@ export default function RootLayout({
           className={`${geistSans.variable} ${geistMono.variable} antialiased`}
         >
           <ConvexClientProvider>
-            <DrawerPlateProvider />
+          <DrawerPlateProvider />
             {children}
+            <HotToaster 
+              position="bottom-right"
+              reverseOrder={false}
+            />
             <Toaster />
           </ConvexClientProvider>
         </body>

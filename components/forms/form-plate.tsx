@@ -1,4 +1,4 @@
-import axios from 'axios';
+import axios, { formToJSON } from 'axios';
 import Image from 'next/image';
 import { Button } from "@/components/ui/button"
 import {
@@ -15,7 +15,7 @@ import {
 } from "@/components/ui/tabs"
 import { Badge } from '@/components/ui/badge'
 import * as z from 'zod';
-import { useForm } from 'react-hook-form';
+import { SubmitHandler, useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import {
     Form,
@@ -36,6 +36,8 @@ import { useCreateRegisterPlate } from '@/app/features/registers/api/use-create-
 import { useGenerateUploadUrl } from '@/app/features/upload/api/use-generate-upload-url';
 import { Id } from '@/convex/_generated/dataModel';
 import { toast } from 'sonner';
+import { toast as toastHot } from 'react-hot-toast';
+import { LoaderIcon } from 'lucide-react';
 
 
 const formSchema = z.object({
@@ -72,7 +74,7 @@ export const FormPlate: React.FC<FormPlateProps> = ({ tab, id }) => {
     const [compressedImages, setCompressedImages] = useState([]);
     const [isLoading, setIsLoading] = useState(false);
     const [images, setImages] = useState<FileList | []>([]);
-    const [imageCount, setImageCount] = useState<Number | null>(null);
+    const [imageCount, setImageCount] = useState<any>("");
     let imagesId = [];
 
     const { mutate: registerPlate, isPending: isRegisterPending } = useCreateRegisterPlate();
@@ -81,8 +83,6 @@ export const FormPlate: React.FC<FormPlateProps> = ({ tab, id }) => {
     const handleDrop = useCallback(async (files: any) => {
         setImages(files)
     }, []);
-
-    console.log(form.getValues("rir"));
 
     const { acceptedFiles, getRootProps, getInputProps } = useDropzone({
         onDrop: handleDrop,
@@ -97,18 +97,158 @@ export const FormPlate: React.FC<FormPlateProps> = ({ tab, id }) => {
 
     useEffect(() => {
         form.setValue('inspector', inspetorName);
-        console.log(form.getValues("rir"))
     }, [setInspectorName, inspetorName, form, id]);
 
+    const onSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+        e.preventDefault();
 
-
-    const onSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
-        event.preventDefault();
-
-        form.getFieldState('item').error
-        form.getFieldState('lot').error?.message
+        if (!form.getValues('item')) {
+            form.setError('item', { type: "minLength", message: "field required" });
+            toastHot.error('All fields are required.', {
+                style: {
+                    border: '5px solid #fff',
+                    padding: '16px',
+                    color: 'white',
+                    background: 'red'
+                },
+                iconTheme: {
+                    primary: 'white',
+                    secondary: 'red',
+                },
+            });
+            return;
+        } else {
+            form.clearErrors()
+        }
+        if (!form.getValues('supplier')) {
+            form.setError('supplier', { type: "minLength", message: "field required" });
+            toastHot.error('All fields are required.', {
+                style: {
+                    border: '5px solid #fff',
+                    padding: '16px',
+                    color: 'white',
+                    background: 'red'
+                },
+                iconTheme: {
+                    primary: 'white',
+                    secondary: 'red',
+                },
+            });
+            return;
+        } else {
+            form.clearErrors()
+        }
+        if (!form.getValues('lot')) {
+            form.setError('lot', { type: "minLength", message: "field required" });
+            toastHot.error('All fields are required.', {
+                style: {
+                    border: '5px solid #fff',
+                    padding: '16px',
+                    color: 'white',
+                    background: 'red'
+                },
+                iconTheme: {
+                    primary: 'white',
+                    secondary: 'red',
+                },
+            });
+            return;
+        } else {
+            form.clearErrors()
+        }
+        if (!form.getValues('invoice')) {
+            form.setError('invoice', { type: "minLength", message: "field required" });
+            toastHot.error('All fields are required.', {
+                style: {
+                    border: '5px solid #fff',
+                    padding: '16px',
+                    color: 'white',
+                    background: 'red'
+                },
+                iconTheme: {
+                    primary: 'white',
+                    secondary: 'red',
+                },
+            });
+            return;
+        } else {
+            form.clearErrors()
+        }
+        if (!form.getValues('rir')) {
+            form.setError('rir', { type: "minLength", message: "field required" });
+            toastHot.error('All fields are required.', {
+                style: {
+                    border: '5px solid #fff',
+                    padding: '16px',
+                    color: 'white',
+                    background: 'red'
+                },
+                iconTheme: {
+                    primary: 'white',
+                    secondary: 'red',
+                },
+            });
+            return;
+        } else {
+            form.clearErrors()
+        }
+        if (!form.getValues('hardnessOne')) {
+            form.setError('hardnessOne', { type: "minLength", message: "field required" });
+            toastHot.error('All fields are required.', {
+                style: {
+                    border: '5px solid #fff',
+                    padding: '16px',
+                    color: 'white',
+                    background: 'red'
+                },
+                iconTheme: {
+                    primary: 'white',
+                    secondary: 'red',
+                },
+            });
+            return;
+        } else {
+            form.clearErrors()
+        }
+        if (!form.getValues('hardnessTwo')) {
+            form.setError('hardnessTwo', { type: "minLength", message: "field required" });
+            toastHot.error('All fields are required.', {
+                style: {
+                    border: '5px solid #fff',
+                    padding: '16px',
+                    color: 'white',
+                    background: 'red'
+                },
+                iconTheme: {
+                    primary: 'white',
+                    secondary: 'red',
+                },
+            });
+            return;
+        } else {
+            form.clearErrors()
+        }
+        if (!form.getValues('hardnessThree')) {
+            form.setError('hardnessThree', { type: "minLength", message: "field required" });
+            toastHot.error('All fields are required.', {
+                style: {
+                    border: '5px solid #fff',
+                    padding: '16px',
+                    color: 'white',
+                    background: 'red'
+                },
+                iconTheme: {
+                    primary: 'white',
+                    secondary: 'red',
+                },
+            });
+            return;
+        } else {
+            form.clearErrors()
+        }
 
         try {
+            setIsLoading(true);
             if (images) {
                 for (let i = 0; images.length > i; i++) {
 
@@ -126,13 +266,14 @@ export const FormPlate: React.FC<FormPlateProps> = ({ tab, id }) => {
 
                     const { storageId } = await result.json();
 
+
                     setImageCount(i + 1);
+
 
                     imagesId.push(storageId);
                 };
-            }
 
-            
+            }
 
             registerPlate({
                 code: form.getValues('item'),
@@ -148,21 +289,60 @@ export const FormPlate: React.FC<FormPlateProps> = ({ tab, id }) => {
                 image: imagesId as any,
             }, {
                 onSuccess: () => {
-                    toast.success('Register created!')
+                    toastHot.success('Register created!', {
+                        style: {
+                            border: '5px solid #fff',
+                            padding: '16px',
+                            color: 'white',
+                            background: 'green'
+                        },
+                        iconTheme: {
+                            primary: 'white',
+                            secondary: 'green',
+                        },
+                    });
+                    form.clearErrors();
+                    setIsLoading(false);
+                    setImageCount("");
+                    form.reset({
+                        item: '',
+                        supplier: 'Fornecedor',
+                        lot: '',
+                        invoice: '',
+                        rir: '',
+                        hardnessOne: '',
+                        hardnessTwo: '',
+                        hardnessThree: '',
+                    })
+                    setImages([])
                 },
                 onError: () => {
-                    toast.error('Register failed!')
+                    toastHot.error('Register failed!', {
+                        style: {
+                            border: '5px solid #fff',
+                            padding: '16px',
+                            color: 'white',
+                            background: 'red'
+                        },
+                        iconTheme: {
+                            primary: 'white',
+                            secondary: 'red',
+                        },
+                    });
                 }
-            })
+            });
+            setIsLoading(false);
         } catch (error) {
-            console.log('error')
+            console.log(error);
+        } finally {
+            setIsLoading(true);
         }
     }
 
     return (
         <>
             <Form {...form}>
-                <form  onSubmit={onSubmit}>
+                <form onSubmit={onSubmit}>
                     <TabsContent value={tab}>
                         <Card>
                             <CardHeader>
@@ -385,11 +565,14 @@ export const FormPlate: React.FC<FormPlateProps> = ({ tab, id }) => {
                             <CardFooter>
                                 <div className='flex w-[390px] justify-center '>
                                     <Button
-                                        disabled={isRegisterPending || isUploading}
+                                        disabled={isRegisterPending || isUploading || isLoading}
                                         type='submit'
                                         className='flex w-[320px] '
+
                                     >
-                                        {isLoading ? <div><RiseLoader color="#f5f7fa" size={5} /></div> : 'Registrar'}
+                                        {isLoading
+                                            ? <div className='gap-x-2 flex justify-center items-center'><LoaderIcon className='size-5 animate-spin' />uploading image {imageCount}</div>
+                                            : 'Registrar'}
                                     </Button>
                                 </div>
                             </CardFooter>
