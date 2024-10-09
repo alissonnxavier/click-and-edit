@@ -73,7 +73,7 @@ export const FormPlate: React.FC<FormPlateProps> = ({ tab, id }) => {
     const [base64, setBase64] = useState([]);
     const [compressedImages, setCompressedImages] = useState([]);
     const [isLoading, setIsLoading] = useState(false);
-    const [images, setImages] = useState<FileList | []>([]);
+    const [images, setImages] = useState<any | []>([]);
     const [imageCount, setImageCount] = useState<any>("");
     let imagesId = [];
 
@@ -81,8 +81,17 @@ export const FormPlate: React.FC<FormPlateProps> = ({ tab, id }) => {
     const { mutate: generateUploadUrl, isPending: isUploading } = useGenerateUploadUrl();
 
     const handleDrop = useCallback(async (files: any) => {
-        setImages(files)
-    }, []);
+        if (images.length >= 1) {
+            let array = [...images];
+            array.push(...files);
+            setImages(array);
+            console.log("have some image")
+        } else {
+            setImages(files)
+        }
+    }, [images]);
+
+    console.log(images);
 
     const { acceptedFiles, getRootProps, getInputProps } = useDropzone({
         onDrop: handleDrop,

@@ -60,11 +60,11 @@ export default function Home() {
     <>
 
       <div className="flex items-center justify-center h-full w-full bg-[#f1f2f4] rounded-md shadow-none pb-2 ">
-        <Button
+       {/*  <Button
           onClick={handleDrawerPlate.onOpen}
         >
           Open
-        </Button>
+        </Button> */}
         <FormTrigger />
       </div>
     </>
