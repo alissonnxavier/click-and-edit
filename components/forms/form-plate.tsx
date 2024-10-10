@@ -28,7 +28,7 @@ import { useRouter } from 'next/navigation';
 import { useCallback, useEffect, useState } from 'react';
 import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { useDropzone } from 'react-dropzone';
-import { ImagePlus } from 'lucide-react';
+import { CircleX, ImagePlus } from 'lucide-react';
 import Compressor from 'compressorjs';
 import { RiseLoader } from 'react-spinners';
 import { Tip } from '@/components/ui/tip';
@@ -91,8 +91,6 @@ export const FormPlate: React.FC<FormPlateProps> = ({ tab, id }) => {
         }
     }, [images]);
 
-    console.log(images);
-
     const { acceptedFiles, getRootProps, getInputProps } = useDropzone({
         onDrop: handleDrop,
         disabled: isLoading,
@@ -101,164 +99,58 @@ export const FormPlate: React.FC<FormPlateProps> = ({ tab, id }) => {
             'image/jpg': [],
             'image/png': [],
         },
-        maxFiles: 5,
     });
 
+    const handleImages = (index: number) => {
+        let arr = [];
+        arr = [...images];
+        arr.splice(index, 1);
+        setImages(arr);
+    };
+
     useEffect(() => {
-        form.setValue('inspector', inspetorName);
-    }, [setInspectorName, inspetorName, form, id]);
+        images
+    }, [setInspectorName, inspetorName, form, id, images]);
 
     const onSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
 
-        if (!form.getValues('item')) {
-            form.setError('item', { type: "minLength", message: "field required" });
-            toastHot.error('All fields are required.', {
-                style: {
-                    border: '5px solid #fff',
-                    padding: '16px',
-                    color: 'white',
-                    background: 'red'
-                },
-                iconTheme: {
-                    primary: 'white',
-                    secondary: 'red',
-                },
-            });
-            return;
-        } else {
-            form.clearErrors()
-        }
-        if (!form.getValues('supplier')) {
-            form.setError('supplier', { type: "minLength", message: "field required" });
-            toastHot.error('All fields are required.', {
-                style: {
-                    border: '5px solid #fff',
-                    padding: '16px',
-                    color: 'white',
-                    background: 'red'
-                },
-                iconTheme: {
-                    primary: 'white',
-                    secondary: 'red',
-                },
-            });
-            return;
-        } else {
-            form.clearErrors()
-        }
-        if (!form.getValues('lot')) {
-            form.setError('lot', { type: "minLength", message: "field required" });
-            toastHot.error('All fields are required.', {
-                style: {
-                    border: '5px solid #fff',
-                    padding: '16px',
-                    color: 'white',
-                    background: 'red'
-                },
-                iconTheme: {
-                    primary: 'white',
-                    secondary: 'red',
-                },
-            });
-            return;
-        } else {
-            form.clearErrors()
-        }
-        if (!form.getValues('invoice')) {
-            form.setError('invoice', { type: "minLength", message: "field required" });
-            toastHot.error('All fields are required.', {
-                style: {
-                    border: '5px solid #fff',
-                    padding: '16px',
-                    color: 'white',
-                    background: 'red'
-                },
-                iconTheme: {
-                    primary: 'white',
-                    secondary: 'red',
-                },
-            });
-            return;
-        } else {
-            form.clearErrors()
-        }
-        if (!form.getValues('rir')) {
-            form.setError('rir', { type: "minLength", message: "field required" });
-            toastHot.error('All fields are required.', {
-                style: {
-                    border: '5px solid #fff',
-                    padding: '16px',
-                    color: 'white',
-                    background: 'red'
-                },
-                iconTheme: {
-                    primary: 'white',
-                    secondary: 'red',
-                },
-            });
-            return;
-        } else {
-            form.clearErrors()
-        }
-        if (!form.getValues('hardnessOne')) {
-            form.setError('hardnessOne', { type: "minLength", message: "field required" });
-            toastHot.error('All fields are required.', {
-                style: {
-                    border: '5px solid #fff',
-                    padding: '16px',
-                    color: 'white',
-                    background: 'red'
-                },
-                iconTheme: {
-                    primary: 'white',
-                    secondary: 'red',
-                },
-            });
-            return;
-        } else {
-            form.clearErrors()
-        }
-        if (!form.getValues('hardnessTwo')) {
-            form.setError('hardnessTwo', { type: "minLength", message: "field required" });
-            toastHot.error('All fields are required.', {
-                style: {
-                    border: '5px solid #fff',
-                    padding: '16px',
-                    color: 'white',
-                    background: 'red'
-                },
-                iconTheme: {
-                    primary: 'white',
-                    secondary: 'red',
-                },
-            });
-            return;
-        } else {
-            form.clearErrors()
-        }
-        if (!form.getValues('hardnessThree')) {
-            form.setError('hardnessThree', { type: "minLength", message: "field required" });
-            toastHot.error('All fields are required.', {
-                style: {
-                    border: '5px solid #fff',
-                    padding: '16px',
-                    color: 'white',
-                    background: 'red'
-                },
-                iconTheme: {
-                    primary: 'white',
-                    secondary: 'red',
-                },
-            });
-            return;
-        } else {
-            form.clearErrors()
+        let fields = [
+            'item',
+            'supplier',
+            'lot',
+            'invoice',
+            'rir',
+            'hardnessOne',
+            'hardnessTwo',
+            'hardnessThree'
+        ];
+
+        for (const field of fields) {
+            console.log(field);
+
+            if (!form.getValues(field as any)) {
+                //@ts-ignore
+                form.setError(field, { type: "minLength", message: "field required" });
+                toastHot.error('All fields are required.', {
+                    style: {
+                        border: '5px solid #fff',
+                        padding: '16px',
+                        color: 'white',
+                        background: 'red'
+                    },
+                    iconTheme: {
+                        primary: 'white',
+                        secondary: 'red',
+                    },
+                });
+                return;
+            };
         }
 
         try {
             setIsLoading(true);
-            if (images) {
+            if (images.length > 0) {
                 for (let i = 0; images.length > i; i++) {
 
                     const url = await generateUploadUrl({}, { throwError: true });
@@ -275,9 +167,7 @@ export const FormPlate: React.FC<FormPlateProps> = ({ tab, id }) => {
 
                     const { storageId } = await result.json();
 
-
                     setImageCount(i + 1);
-
 
                     imagesId.push(storageId);
                 };
@@ -322,7 +212,7 @@ export const FormPlate: React.FC<FormPlateProps> = ({ tab, id }) => {
                         hardnessOne: '',
                         hardnessTwo: '',
                         hardnessThree: '',
-                    })
+                    });
                     setImages([])
                 },
                 onError: () => {
@@ -344,7 +234,18 @@ export const FormPlate: React.FC<FormPlateProps> = ({ tab, id }) => {
         } catch (error) {
             console.log(error);
         } finally {
-            setIsLoading(true);
+            setIsLoading(false);
+            form.reset({
+                item: '',
+                supplier: 'Fornecedor',
+                lot: '',
+                invoice: '',
+                rir: '',
+                hardnessOne: '',
+                hardnessTwo: '',
+                hardnessThree: '',
+            });
+            setImages([]);
         }
     }
 
@@ -543,27 +444,31 @@ export const FormPlate: React.FC<FormPlateProps> = ({ tab, id }) => {
                                                 <Tip
                                                     message='Carregar imagens'
                                                     content={
-                                                        <ImagePlus size={46} />
+                                                        <ImagePlus size={46} className='animate-pulse' />
                                                     }
                                                 />
-                                                <div className='animate-pulse'>
-                                                    {5 - images.length < 1 ? "" : `+${5 - images.length}`}
-                                                </div>
                                             </div>
                                         </div>
                                         <aside>
                                             <ul className='flex justify-center align-middle items-center'>
                                                 {
                                                     //@ts-ignore
-                                                    images.map((img: File, index: string) => (
-                                                        <Image
-                                                            className='m-1 aspect-square object-cover rounded hover:scale-150 transition'
-                                                            key={index}
-                                                            src={URL.createObjectURL(img)}
-                                                            height={38}
-                                                            width={38}
-                                                            alt='uploaded image'
-                                                        />
+                                                    images.map((img: File, index: number) => (
+                                                        <>
+                                                            <div >
+                                                                <Image
+                                                                    className='m-1 aspect-square object-cover rounded hover:scale-150 transition'
+                                                                    key={index}
+                                                                    src={URL.createObjectURL(img)}
+                                                                    height={38}
+                                                                    width={38}
+                                                                    alt='uploaded image'
+                                                                    onClick={() => {
+                                                                        handleImages(index)
+                                                                    }}
+                                                                />
+                                                            </div>
+                                                        </>
                                                     ))
                                                 }
                                             </ul>
