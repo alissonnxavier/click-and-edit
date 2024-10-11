@@ -53,7 +53,9 @@ export const get = query({
 
         const registers = await ctx.db
             .query("plateRegister")
-            .collect();
+            .order("desc")
+            .collect()
+            
 
         if (!registers) {
             return [];

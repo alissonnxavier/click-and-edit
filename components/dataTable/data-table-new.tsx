@@ -34,7 +34,6 @@ import {
     TableHeader,
     TableRow,
 } from "@/components/ui/table"
-import { Badge } from "../ui/badge"
 import { GridLoader } from "react-spinners"
 
 interface DataTableProps<TData, TValue> {
@@ -50,6 +49,8 @@ export function DataTableNew<TData, TValue>({
     searchKey,
     tableName
 }: DataTableProps<TData, TValue>) {
+
+    console.log(data)
 
     const [sorting, setSorting] = React.useState<SortingState>([])
     const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>([])
@@ -120,7 +121,7 @@ export function DataTableNew<TData, TValue>({
                                     >
                                         {
                                             column.id == 'inspector' && 'Inspetor' ||
-                                            column.id == 'item' && 'Item' ||
+
                                             column.id == 'version' && 'Revisão' ||
                                             column.id == 'odf' && 'ODF' ||
                                             column.id == 'amount' && 'Quantidade' ||
@@ -128,7 +129,7 @@ export function DataTableNew<TData, TValue>({
                                             column.id == 'thickness' && 'Espessura' ||
                                             column.id == 'cnc' && 'CNC' ||
                                             column.id == 'result' && 'Resultado' ||
-                                            column.id == 'createdAt' && 'Data' ||
+                                            column.id == '_creationTime' && 'Data' ||
                                             column.id == 'process' && 'Processo'
                                         }
                                     </DropdownMenuCheckboxItem>

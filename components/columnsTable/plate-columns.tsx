@@ -28,7 +28,7 @@ type PlateTypes = {
     hbThree: string;
     inspector: string;
     image: any;
-    createdAt: string;
+    _creationTime: string;
 }
 
 export const ColumnsPlate = () => {
@@ -57,8 +57,9 @@ export const ColumnsPlate = () => {
             enableHiding: false,
         }, */
         {
-            accessorKey: "createdAt",
+            accessorKey: "_creationTime",
             header: ({ column }) => {
+
                 return (
                     <Button
                         variant="link"
@@ -69,13 +70,13 @@ export const ColumnsPlate = () => {
                     </Button>
                 )
             },
-            cell: ({ row }) => <div className="">{/* {format(new Date(row.getValue('_creationTime')), "dd/MM/yyyy HH:mm:ss")} */}</div>,
+            cell: ({ row }) => <div className=""> {/* {row.getValue("_creationTime")}  */}{format(new Date(row.getValue('_creationTime')), "dd/MM/yyyy HH:mm:ss")} </div>,
         },
         {
-            accessorKey: "item",
-            header: "Item",
+            accessorKey: "code",
+            header: "Code",
             cell: ({ row }) => (
-                <div className="capitalize">{row.getValue("item")}</div>
+                <div className="capitalize">{row.getValue("code")}</div>
             ),
         },
         {
@@ -107,24 +108,24 @@ export const ColumnsPlate = () => {
             ),
         },
         {
-            accessorKey: "hbOne",
+            accessorKey: "hardnessOne",
             header: "HB 1",
             cell: ({ row }) => (
-                <div className="capitalize">{row.getValue("hbOne")}</div>
+                <div className="capitalize">{row.getValue("hardnessOne")}</div>
             ),
         },
         {
-            accessorKey: "hbTwo",
+            accessorKey: "hardnessTwo",
             header: "HB 2",
             cell: ({ row }) => (
-                <div className="capitalize">{row.getValue("hbTwo")}</div>
+                <div className="capitalize">{row.getValue("hardnessTwo")}</div>
             ),
         },
         {
-            accessorKey: "hbThree",
+            accessorKey: "hardnessTree",
             header: "HB 3",
             cell: ({ row }) => (
-                <div className="capitalize">{row.getValue("hbThree")}</div>
+                <div className="capitalize">{row.getValue("hardnessTree")}</div>
             ),
         },
         {
@@ -165,10 +166,10 @@ export const ColumnsPlate = () => {
               },
           }, */
         {
-            accessorKey: "inspector",
+            accessorKey: "qualityMember",
             header: "Qualidade",
             cell: ({ row }) => (
-                <div className="capitalize">{row.getValue("inspector")}</div>
+                <div className="capitalize">{row.getValue("qualityMember")}</div>
             ),
         },
         {
@@ -190,6 +191,7 @@ export const ColumnsPlate = () => {
                         <DropdownMenuContent align="end">
                             <DropdownMenuLabel>Açoẽs</DropdownMenuLabel>
                             <DropdownMenuItem>
+                                Ver mais
                             </DropdownMenuItem>
                         </DropdownMenuContent>
                     </DropdownMenu>

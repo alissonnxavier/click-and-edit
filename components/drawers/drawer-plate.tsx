@@ -14,9 +14,9 @@ export function DrawerPlate() {
             isOpen={handleDrawer.isOpen}
             onClose={handleDrawer.onClose}
         >
-            <DataTableNew 
+            <DataTableNew
                 tableName="Inspeção de chapas"
-                searchKey="item"
+                searchKey="code"
                 columns={ColumnsPlate()}
                 data={data}
             />
