@@ -7,6 +7,7 @@ import { Toaster as HotToaster } from "react-hot-toast";
 import { siteConfig } from "@/config/site";
 import "./globals.css";
 import { DrawerPlateProvider } from "@/providers/drawer-plate-provider";
+import { ThemeProvider } from "@/providers/theme-provider";
 
 const geistSans = localFont({
   src: "./fonts/GeistVF.woff",
@@ -44,15 +45,22 @@ export default function RootLayout({
         <body
           className={`${geistSans.variable} ${geistMono.variable} antialiased`}
         >
-          <ConvexClientProvider>
-          <DrawerPlateProvider />
-            {children}
-            <HotToaster 
-              position="bottom-right"
-              reverseOrder={false}
-            />
-            <Toaster />
-          </ConvexClientProvider>
+          <ThemeProvider
+            attribute="class"
+            defaultTheme="system"
+            enableSystem
+            disableTransitionOnChange
+          >
+            <ConvexClientProvider>
+              <DrawerPlateProvider />
+              {children}
+              <HotToaster
+                position="bottom-right"
+                reverseOrder={false}
+              />
+              <Toaster />
+            </ConvexClientProvider>
+          </ThemeProvider>
         </body>
       </html>
     </ConvexAuthNextjsServerProvider>

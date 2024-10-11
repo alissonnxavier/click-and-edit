@@ -1,8 +1,8 @@
 import { useGetRegisters } from "@/app/features/registers/api/use-get-plate-registers";
 import { DrawerBasis } from "./drawer-basis";
 import { useDrawerPlate } from "@/hooks/use-drawer-plate";
-import Image from "next/image";
-
+import { DataTableNew } from "../dataTable/data-table-new";
+import { ColumnsPlate } from "../columnsTable/plate-columns";
 
 export function DrawerPlate() {
 
@@ -14,9 +14,12 @@ export function DrawerPlate() {
             isOpen={handleDrawer.isOpen}
             onClose={handleDrawer.onClose}
         >
-            <div className="flex flex-wrap flex-row w-5/6 m-auto">
-               {JSON.stringify(data)}
-            </div>
+            <DataTableNew 
+                tableName="Inspeção de chapas"
+                searchKey="item"
+                columns={ColumnsPlate()}
+                data={data}
+            />
         </DrawerBasis>
     )
 }

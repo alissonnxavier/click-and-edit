@@ -8,6 +8,7 @@ import { useEventListener } from "usehooks-ts";
 import FormTrigger from "@/components/forms/form-trigger";
 import { Button } from "@/components/ui/button";
 import { useDrawerPlate } from "@/hooks/use-drawer-plate";
+import { Navbar } from "@/components/navbar";
 
 
 export default function Home() {
@@ -57,16 +58,13 @@ export default function Home() {
 
 
   return (
-    <>
-
-      <div className="flex items-center justify-center h-full w-full bg-[#f1f2f4] rounded-md shadow-none pb-2 ">
-       {/*  <Button
-          onClick={handleDrawerPlate.onOpen}
-        >
-          Open
-        </Button> */}
+    <div className=" h-full gap-5">
+      <div className="flex justify-center pt-10">
+        <Navbar />
+      </div>
+      <div className="flex justify-center pt-10">
         <FormTrigger />
       </div>
-    </>
+    </div>
   );
 }

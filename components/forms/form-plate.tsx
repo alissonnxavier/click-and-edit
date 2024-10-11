@@ -38,6 +38,7 @@ import { Id } from '@/convex/_generated/dataModel';
 import { toast } from 'sonner';
 import { toast as toastHot } from 'react-hot-toast';
 import { LoaderIcon } from 'lucide-react';
+import { useCurrentUser } from '@/app/features/auth/api/use-current-user';
 
 
 const formSchema = z.object({
@@ -79,6 +80,7 @@ export const FormPlate: React.FC<FormPlateProps> = ({ tab, id }) => {
 
     const { mutate: registerPlate, isPending: isRegisterPending } = useCreateRegisterPlate();
     const { mutate: generateUploadUrl, isPending: isUploading } = useGenerateUploadUrl();
+    const { data: userData, isLoading: isLoadingCurrentUser } = useCurrentUser();
 
     const handleDrop = useCallback(async (files: any) => {
         if (images.length >= 1) {
@@ -109,8 +111,8 @@ export const FormPlate: React.FC<FormPlateProps> = ({ tab, id }) => {
     };
 
     useEffect(() => {
-        images
-    }, [setInspectorName, inspetorName, form, id, images]);
+        setInspectorName(userData?.name as string)
+    }, [setInspectorName, inspetorName, form, id, images, userData?.name]);
 
     const onSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
@@ -127,11 +129,9 @@ export const FormPlate: React.FC<FormPlateProps> = ({ tab, id }) => {
         ];
 
         for (const field of fields) {
-            console.log(field);
 
             if (!form.getValues(field as any)) {
-                //@ts-ignore
-                form.setError(field, { type: "minLength", message: "field required" });
+                form.setError(field as any, { type: "minLength", message: "field required" });
                 toastHot.error('All fields are required.', {
                     style: {
                         border: '5px solid #fff',
@@ -184,7 +184,7 @@ export const FormPlate: React.FC<FormPlateProps> = ({ tab, id }) => {
                 hardnessOne: form.getValues('hardnessOne'),
                 hardnessTwo: form.getValues('hardnessTwo'),
                 hardnessThree: form.getValues('hardnessThree'),
-                qualityMember: 'alisson',
+                qualityMember: inspetorName,
                 image: imagesId as any,
             }, {
                 onSuccess: () => {
