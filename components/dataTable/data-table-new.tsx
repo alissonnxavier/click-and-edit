@@ -77,9 +77,7 @@ export function DataTableNew<TData, TValue>({
     if (data.length < 1) {
         return (
             <>
-                <div className="flex justify-center p-10">
-                </div>
-                <div className="flex h-5/6 justify-center items-center">
+                <div className="flex justify-center items-center mt-32">
                     <GridLoader color="#9e0837" size={100} />
                 </div>
             </>
@@ -118,17 +116,13 @@ export function DataTableNew<TData, TValue>({
                                         }
                                     >
                                         {
-                                            column.id == 'inspector' && 'Inspetor' ||
-
-                                            column.id == 'version' && 'Revisão' ||
-                                            column.id == 'odf' && 'ODF' ||
-                                            column.id == 'amount' && 'Quantidade' ||
-                                            column.id == 'qtd' && 'QTD inspecionado' ||
-                                            column.id == 'thickness' && 'Espessura' ||
-                                            column.id == 'cnc' && 'CNC' ||
-                                            column.id == 'result' && 'Resultado' ||
+                                            column.id == 'qualityMember' && 'Inspetor' ||
                                             column.id == '_creationTime' && 'Data' ||
-                                            column.id == 'process' && 'Processo'
+                                            column.id == 'code' && 'Codigo' ||
+                                            column.id == 'invoice' && 'Nota fiscal' ||
+                                            column.id == 'rir' && 'RIR' ||
+                                            column.id == 'supplier' && 'Fornecedor' ||
+                                            column.id == 'lot' && 'Lote' 
                                         }
                                     </DropdownMenuCheckboxItem>
                                 )

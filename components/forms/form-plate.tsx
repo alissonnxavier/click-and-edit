@@ -1,4 +1,3 @@
-import axios, { formToJSON } from 'axios';
 import Image from 'next/image';
 import { Button } from "@/components/ui/button"
 import {
@@ -24,18 +23,13 @@ import {
     FormItem,
     FormLabel,
 } from "@/components/ui/form"
-import { useRouter } from 'next/navigation';
 import { useCallback, useEffect, useState } from 'react';
 import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { useDropzone } from 'react-dropzone';
-import { CircleX, ImagePlus } from 'lucide-react';
-import Compressor from 'compressorjs';
-import { RiseLoader } from 'react-spinners';
+import { ImagePlus } from 'lucide-react';
 import { Tip } from '@/components/ui/tip';
 import { useCreateRegisterPlate } from '@/app/features/registers/api/use-create-plate-register';
 import { useGenerateUploadUrl } from '@/app/features/upload/api/use-generate-upload-url';
-import { Id } from '@/convex/_generated/dataModel';
-import { toast } from 'sonner';
 import { toast as toastHot } from 'react-hot-toast';
 import { LoaderIcon } from 'lucide-react';
 import { useCurrentUser } from '@/app/features/auth/api/use-current-user';
@@ -175,7 +169,7 @@ export const FormPlate: React.FC<FormPlateProps> = ({ tab, id }) => {
             }
 
             registerPlate({
-                code: form.getValues('item'),
+                code: `CH.${form.getValues('item')}`,
                 //@ts-ignore
                 supplier: form.getValues('supplier'),
                 lot: form.getValues('lot'),
@@ -184,7 +178,7 @@ export const FormPlate: React.FC<FormPlateProps> = ({ tab, id }) => {
                 hardnessOne: form.getValues('hardnessOne'),
                 hardnessTwo: form.getValues('hardnessTwo'),
                 hardnessThree: form.getValues('hardnessThree'),
-                qualityMember: inspetorName,
+                qualityMember: userData?.name,
                 image: imagesId as any,
             }, {
                 onSuccess: () => {

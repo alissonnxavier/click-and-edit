@@ -39,7 +39,7 @@ export const useCreateRegisterPlate = () => {
 
             setStatus("pending");
 
-            const response = await mutation(values);
+            const response = await mutation(values as any);
             options?.onSuccess?.(response);
             return response;
         } catch (error) {

@@ -17,10 +17,11 @@ import {
 import { format } from "date-fns";
 import { useDrawerSeeMore } from "@/hooks/use-drawer-see-more"
 import { useDrawerPlate } from "@/hooks/use-drawer-plate"
+import { Id } from "@/convex/_generated/dataModel"
 
 
 type PlateTypes = {
-    id: string;
+    _id: string;
     supplier: string;
     lot: string;
     invoice: string;
@@ -127,10 +128,10 @@ export const ColumnsPlate = () => {
             ),
         },
         {
-            accessorKey: "hardnessTree",
+            accessorKey: "hardnessThree",
             header: "HB 3",
             cell: ({ row }) => (
-                <div className="capitalize">{row.getValue("hardnessTree")}</div>
+                <div className="capitalize">{row.getValue("hardnessThree")}</div>
             ),
         },
         {
@@ -197,8 +198,8 @@ export const ColumnsPlate = () => {
                             <DropdownMenuLabel>Açoẽs</DropdownMenuLabel>
                             <DropdownMenuItem
                                 onClick={() => {
-                                    handleDrawerSeeMore.onOpen("123456");
-                                    handler.onClose();
+                                    handleDrawerSeeMore.onOpen(row.original._id as Id<"plateRegister">)
+                                   
                                 }}
                             >
                                 Ver mais

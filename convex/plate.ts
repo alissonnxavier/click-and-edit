@@ -55,13 +55,11 @@ export const get = query({
             .query("plateRegister")
             .order("desc")
             .collect()
-            
 
         if (!registers) {
             return [];
         }
 
-        let arrayPhotosUrl = [] as any;
         let data = [] as any;
 
         for (let i = 0; registers.length > i; i++) {
@@ -78,3 +76,41 @@ export const get = query({
         return data;
     },
 });
+
+export const getById = query({
+    args: {
+        id: v.optional(v.id("plateRegister")),
+    },
+    handler: async (ctx, args) => {
+        const userId = await auth.getUserId(ctx);
+
+        console.log(args.id)
+
+        if (!userId) {
+            return []
+        };
+
+        const result = await ctx.db
+            .query("plateRegister")
+            .filter((q) => q.eq(q.field("_id"), args.id))
+            .collect();
+
+        if (!result) {
+            return [];
+        }
+
+        let data = [] as any;
+        if (result) {
+            let array = [];
+            for (let i = 0; result[0]?.image.length > i; i++) {
+                let image = await ctx.storage.getUrl(result[0]?.image[i] as Id<"_storage">);
+                array.push(image);
+            };
+            let images = { photos: array };
+            data = { ...result, ...images };
+
+        }
+
+        return data;
+    }
+})
