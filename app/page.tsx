@@ -58,7 +58,7 @@ export default function Home() {
 
 
   return (
-    <div className=" h-full gap-5">
+    <div className="h-full gap-5">
       <div className="flex justify-center pt-10">
         <Navbar />
       </div>

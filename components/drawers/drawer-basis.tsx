@@ -27,7 +27,7 @@ export const DrawerBasis: React.FC<DrawerProps> = ({
         >
             <DrawerContent className="h-full w-full border-1 border-black dark:border-slate-300">
                 <div className="">
-                    <div className="flex flex-wrap justify-center items-center w-5/6 m-auto mt-10">
+                    <div className="flex flex-wrap justify-center items-center m-auto mt-10 ">
                         {children}
                     </div>
                 </div>

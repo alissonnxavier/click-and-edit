@@ -8,6 +8,8 @@ import { siteConfig } from "@/config/site";
 import "./globals.css";
 import { DrawerPlateProvider } from "@/providers/drawer-plate-provider";
 import { ThemeProvider } from "@/providers/theme-provider";
+import { DrawerSeeMoreProvider } from "@/providers/drawer-see-more";
+
 
 const geistSans = localFont({
   src: "./fonts/GeistVF.woff",
@@ -53,6 +55,7 @@ export default function RootLayout({
           >
             <ConvexClientProvider>
               <DrawerPlateProvider />
+              <DrawerSeeMoreProvider />
               {children}
               <HotToaster
                 position="bottom-right"

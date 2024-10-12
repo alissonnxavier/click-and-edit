@@ -15,6 +15,8 @@ import {
     DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
 import { format } from "date-fns";
+import { useDrawerSeeMore } from "@/hooks/use-drawer-see-more"
+import { useDrawerPlate } from "@/hooks/use-drawer-plate"
 
 
 type PlateTypes = {
@@ -32,6 +34,9 @@ type PlateTypes = {
 }
 
 export const ColumnsPlate = () => {
+
+    const handleDrawerSeeMore = useDrawerSeeMore();
+    const handler = useDrawerPlate();
 
     const columns: ColumnDef<PlateTypes>[] = [
         /* {
@@ -190,7 +195,12 @@ export const ColumnsPlate = () => {
                         </DropdownMenuTrigger>
                         <DropdownMenuContent align="end">
                             <DropdownMenuLabel>Açoẽs</DropdownMenuLabel>
-                            <DropdownMenuItem>
+                            <DropdownMenuItem
+                                onClick={() => {
+                                    handleDrawerSeeMore.onOpen("123456");
+                                    handler.onClose();
+                                }}
+                            >
                                 Ver mais
                             </DropdownMenuItem>
                         </DropdownMenuContent>

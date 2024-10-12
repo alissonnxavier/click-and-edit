@@ -50,8 +50,6 @@ export function DataTableNew<TData, TValue>({
     tableName
 }: DataTableProps<TData, TValue>) {
 
-    console.log(data)
-
     const [sorting, setSorting] = React.useState<SortingState>([])
     const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>([])
     const [columnVisibility, setColumnVisibility] = React.useState<VisibilityState>({})

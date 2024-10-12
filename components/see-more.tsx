@@ -86,10 +86,10 @@ function Items({ w = 0.7, gap = 0.15 }) {
     )
 }
 
-const Page = () => (
+const SeeMore = () => (
     <Canvas gl={{ antialias: false }} dpr={[1, 1.5]} onPointerMissed={() => (state.clicked = null)}>
         <Items />
     </Canvas>
 );
 
-export default Page;
+export default SeeMore;
