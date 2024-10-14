@@ -3,12 +3,13 @@ import { Id } from "@/convex/_generated/dataModel";
 import { useQuery } from "convex/react";
 
 interface useGetWorkspaceProps {
-    id: Id<"plateRegister">;
+    id: Id<"plateRegister">| undefined;
 }
 
 export const useGetRegister = ({ id }: useGetWorkspaceProps) => {
-    const data = useQuery(api.plate.getById, { id });
-    const isLoading = data === undefined;
+
+        const data = useQuery(api.plate.getById, { id});
+        const isLoading = data === undefined;
 
     return { data, isLoading };
 };

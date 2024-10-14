@@ -21,8 +21,10 @@ const buttonVariants = cva(
         link: "text-primary underline-offset-4 hover:underline",
         quality:
           "bg-destructive text-destructive-foreground shadow-sm hover:bg-[#24020e]/90 border border-red-300 text-red-300 bg-[#24020e]",
-          qualityLight:
-          "bg-destructive text-destructive-foreground shadow-sm hover:bg-red-300/90 border border-red-300 text-[#24020e] bg-red-300"
+        qualityLight:
+          "bg-destructive text-destructive-foreground shadow-sm hover:bg-red-300/90 border border-red-300 text-[#24020e] bg-red-300",
+        deleteButton:
+          "bg-destructive text-destructive-foreground shadow-sm hover:bg-red-300/90 border border-red-300 text-[#24020e] bg-red-300 hover:text-white"
       },
       size: {
         default: "h-9 px-4 py-2",
@@ -40,7 +42,7 @@ const buttonVariants = cva(
 
 export interface ButtonProps
   extends React.ButtonHTMLAttributes<HTMLButtonElement>,
-    VariantProps<typeof buttonVariants> {
+  VariantProps<typeof buttonVariants> {
   asChild?: boolean
 }
 

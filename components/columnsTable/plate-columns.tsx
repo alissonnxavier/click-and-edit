@@ -4,7 +4,7 @@ import * as React from "react"
 import {
     ColumnDef,
 } from "@tanstack/react-table"
-import { ArrowUpDown, MoreHorizontal } from "lucide-react"
+import { ArrowUpDown, MoreHorizontal, Trash2 } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import {
     DropdownMenu,
@@ -18,6 +18,8 @@ import { format } from "date-fns";
 import { useDrawerSeeMore } from "@/hooks/use-drawer-see-more"
 import { useDrawerPlate } from "@/hooks/use-drawer-plate"
 import { Id } from "@/convex/_generated/dataModel"
+import { useEditForms } from "@/hooks/use-edit-form"
+import { useRemoveRegisterPlate } from "@/app/features/registers/api/use-remove-plate-register"
 
 
 type PlateTypes = {
@@ -36,32 +38,13 @@ type PlateTypes = {
 
 export const ColumnsPlate = () => {
 
+    const { mutate, isPending } = useRemoveRegisterPlate();
     const handleDrawerSeeMore = useDrawerSeeMore();
-    const handler = useDrawerPlate();
+    const handleEditForm = useEditForms();
+    const handleDrawerPlate = useDrawerPlate();
 
     const columns: ColumnDef<PlateTypes>[] = [
-        /* {
-            id: "select",
-            header: ({ table }) => (
-                <Checkbox
-                    checked={
-                        table.getIsAllPageRowsSelected() ||
-                        (table.getIsSomePageRowsSelected() && "indeterminate")
-                    }
-                    onCheckedChange={(value) => table.toggleAllPageRowsSelected(!!value)}
-                    aria-label="Select all"
-                />
-            ),
-            cell: ({ row }) => (
-                <Checkbox
-                    checked={row.getIsSelected()}
-                    onCheckedChange={(value) => row.toggleSelected(!!value)}
-                    aria-label="Select row"
-                />
-            ),
-            enableSorting: false,
-            enableHiding: false,
-        }, */
+
         {
             accessorKey: "_creationTime",
             header: ({ column }) => {
@@ -142,35 +125,6 @@ export const ColumnsPlate = () => {
                 <div className="capitalize">{row.original.image.length}</div>
             ),
         },
-
-        /*  {
-         accessorKey: "result",
-         header: "Resultado",
-         cell: ({ row }) => (
-             <div className="capitalize">
-                 {
-                     row.getValue("result") == "Aprovado" ?
-                         <Badge variant='secondary' className="bg-green-500 hover:bg-green-300">{row.getValue("result")}</Badge> :
-                         <Badge variant='destructive' className="p-">{row.getValue("result")}</Badge>
-                 }
-             </div>
-         ),
-     }, */
-        /*   {
-              accessorKey: "amount",
-              header: () => <div className="text-right">Amount</div>,
-              cell: ({ row }) => {
-                  const amount = parseFloat(row.getValue("amount"))
-      
-                  // Format the amount as a dollar amount
-                  const formatted = new Intl.NumberFormat("en-US", {
-                      style: "currency",
-                      currency: "USD",
-                  }).format(amount)
-      
-                  return <div className="text-right font-medium">{formatted}</div>
-              },
-          }, */
         {
             accessorKey: "qualityMember",
             header: "Qualidade",
@@ -199,10 +153,27 @@ export const ColumnsPlate = () => {
                             <DropdownMenuItem
                                 onClick={() => {
                                     handleDrawerSeeMore.onOpen(row.original._id as Id<"plateRegister">)
-                                   
+
                                 }}
                             >
                                 Ver mais
+                            </DropdownMenuItem>
+                            <DropdownMenuItem
+                                onClick={() => {
+                                    handleEditForm.onOpen(row.original._id as Id<"plateRegister">, "Plate")
+                                    handleDrawerPlate.onClose();
+                                }}
+                            >
+                                Editar
+                            </DropdownMenuItem>
+                            <DropdownMenuItem>
+                                <Button
+                                    variant='deleteButton'
+                                    className="flex items-center gap-x-2"
+                                    onClick={() => mutate({ id: row.original._id as Id<"plateRegister"> })}
+                                >
+                                    <Trash2 className="size-4" /> Excluir
+                                </Button>
                             </DropdownMenuItem>
                         </DropdownMenuContent>
                     </DropdownMenu>

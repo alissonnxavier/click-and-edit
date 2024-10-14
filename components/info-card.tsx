@@ -18,7 +18,8 @@ import {
     SelectTrigger,
     SelectValue,
 } from "@/components/ui/select";
-import { Badge } from "./ui/badge"
+import { Badge } from "./ui/badge";
+import { format } from "date-fns"
 
 interface InfoCardProps {
     data: any
@@ -34,12 +35,12 @@ export const InfoCard = ({ data = "" }: InfoCardProps) => {
             </CardHeader>
             <CardContent>
                 <div className="gap-y-1">
-                    <div className="flex items-center text-xl"><Badge variant='outline'> Data: </Badge> &nbsp; <div className="text-xs "> {data[0]._creationTime}</div></div>
+                    <div className="flex items-center text-xl"><Badge variant='outline'> Data: </Badge> &nbsp; <div className="text-xs "> {format(data[0]._creationTime, "dd/MM/yyyy HH:mm:ss") }</div></div>
                     <div className="flex items-center text-xl"><Badge variant='outline'> Nota fiscal: </Badge> &nbsp; <div className="text-xs "> {data[0].invoice}</div></div>
                     <div className="flex items-center text-xl"><Badge variant='outline'> Lote: </Badge> &nbsp; <div className="text-xs "> {data[0].lot}</div></div>
                     <div className="flex items-center text-xl"><Badge variant='outline'> RIR: </Badge> &nbsp; <div className="text-xs "> {data[0].rir}</div></div>
                     <div className="flex items-center text-xl"><Badge variant='outline'> Fornecedor: </Badge> &nbsp; <div className="text-xs "> {data[0].supplier}</div></div>
-                    <div className="flex items-center text-xl"><Badge variant='outline'> Qualidade: </Badge> &nbsp; <div className="text-xs "> {data[0].qualityMember}</div></div>
+                    <div className="flex items-center text-xl"><Badge variant='outline'> Qualidade: </Badge> &nbsp; <div className="text-xs capitalize"> {data[0].qualityMember}</div></div>
                 </div>
             </CardContent>
             <CardFooter className="flex justify-between">

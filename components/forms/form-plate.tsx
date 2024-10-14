@@ -33,6 +33,10 @@ import { useGenerateUploadUrl } from '@/app/features/upload/api/use-generate-upl
 import { toast as toastHot } from 'react-hot-toast';
 import { LoaderIcon } from 'lucide-react';
 import { useCurrentUser } from '@/app/features/auth/api/use-current-user';
+import { useGetRegister } from '@/app/features/registers/api/use-get-plate-register';
+import { useEditForms } from '@/hooks/use-edit-form';
+import { useUpdateRegisterPlate } from '@/app/features/registers/api/use-update-plate-register';
+import { Id } from '@/convex/_generated/dataModel';
 
 
 const formSchema = z.object({
@@ -45,7 +49,6 @@ const formSchema = z.object({
     hardnessOne: z.string().min(1),
     hardnessTwo: z.string().min(1),
     hardnessThree: z.string().min(1),
-    inspector: z.string().min(3, { message: 'Atualize a pagina' }),
     images: z.any(z.any()),
     imagesOldName: z.any().default([]),
     originalInspector: z.any(),
@@ -59,6 +62,15 @@ interface FormPlateProps {
 }
 
 export const FormPlate: React.FC<FormPlateProps> = ({ tab, id }) => {
+
+    const handleEditForm = useEditForms();
+
+    const { data: dataPlateRegister, isLoading: isLoadingPlateRegister } = useGetRegister({ id: handleEditForm.id });
+    const { mutate: registerPlate, isPending: isRegisterPending } = useCreateRegisterPlate();
+    const { mutate: updateRegisterPlate, isPending: isUpdatingRegisterPlate } = useUpdateRegisterPlate();
+    const { mutate: generateUploadUrl, isPending: isUploading } = useGenerateUploadUrl();
+    const { data: userData, isLoading: isLoadingCurrentUser } = useCurrentUser();
+
     const form = useForm<SteelPlateFormValues>({
         resolver: zodResolver(formSchema),
     });
@@ -70,18 +82,40 @@ export const FormPlate: React.FC<FormPlateProps> = ({ tab, id }) => {
     const [isLoading, setIsLoading] = useState(false);
     const [images, setImages] = useState<any | []>([]);
     const [imageCount, setImageCount] = useState<any>("");
-    let imagesId = [];
+    let imagesId = [] as any;
+    let currentCode = [];
+    let a = [] as any;
 
-    const { mutate: registerPlate, isPending: isRegisterPending } = useCreateRegisterPlate();
-    const { mutate: generateUploadUrl, isPending: isUploading } = useGenerateUploadUrl();
-    const { data: userData, isLoading: isLoadingCurrentUser } = useCurrentUser();
+    if (handleEditForm.id === undefined) {
+        a = [...images];
+    };
+
+    if (dataPlateRegister?.photos?.length > 0) {
+        a = [...images, ...dataPlateRegister?.photos && dataPlateRegister?.photos];
+        let fields = [
+            'supplier',
+            'lot',
+            'invoice',
+            'rir',
+            'hardnessOne',
+            'hardnessTwo',
+            'hardnessThree'
+        ];
+        if (form.getValues('hardnessThree') === undefined) {
+            form.setValue("item", dataPlateRegister[0]?.code?.slice(3, dataPlateRegister[0]?.code?.length));
+        }
+        if (form.getValues('hardnessThree') === undefined) {
+            for (const field of fields) {
+                form.setValue(field as any, dataPlateRegister[0]?.[field]);
+            };
+        }
+    };
 
     const handleDrop = useCallback(async (files: any) => {
         if (images.length >= 1) {
             let array = [...images];
             array.push(...files);
             setImages(array);
-            console.log("have some image")
         } else {
             setImages(files)
         }
@@ -106,11 +140,10 @@ export const FormPlate: React.FC<FormPlateProps> = ({ tab, id }) => {
 
     useEffect(() => {
         setInspectorName(userData?.name as string)
-    }, [setInspectorName, inspetorName, form, id, images, userData?.name]);
+    }, [setInspectorName, userData?.name]);
 
     const onSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
-
         let fields = [
             'item',
             'supplier',
@@ -123,7 +156,6 @@ export const FormPlate: React.FC<FormPlateProps> = ({ tab, id }) => {
         ];
 
         for (const field of fields) {
-
             if (!form.getValues(field as any)) {
                 form.setError(field as any, { type: "minLength", message: "field required" });
                 toastHot.error('All fields are required.', {
@@ -140,7 +172,7 @@ export const FormPlate: React.FC<FormPlateProps> = ({ tab, id }) => {
                 });
                 return;
             };
-        }
+        };
 
         try {
             setIsLoading(true);
@@ -165,7 +197,6 @@ export const FormPlate: React.FC<FormPlateProps> = ({ tab, id }) => {
 
                     imagesId.push(storageId);
                 };
-
             }
 
             registerPlate({
@@ -241,12 +272,159 @@ export const FormPlate: React.FC<FormPlateProps> = ({ tab, id }) => {
             });
             setImages([]);
         }
-    }
+    };
+
+
+    const onUpdate = async (e: React.FormEvent<HTMLFormElement>) => {
+        e.preventDefault();
+        let fields = [
+            'item',
+            'supplier',
+            'lot',
+            'invoice',
+            'rir',
+            'hardnessOne',
+            'hardnessTwo',
+            'hardnessThree'
+        ];
+
+        for (const field of fields) {
+            if (!form.getValues(field as any)) {
+                form.setError(field as any, { type: "minLength", message: "field required" });
+                toastHot.error('All fields are required.', {
+                    style: {
+                        border: '5px solid #fff',
+                        padding: '16px',
+                        color: 'white',
+                        background: 'red'
+                    },
+                    iconTheme: {
+                        primary: 'white',
+                        secondary: 'red',
+                    },
+                });
+                return;
+            };
+        };
+
+        try {
+            setIsLoading(true);
+            if (a.length > 0) {
+                for (let i = 0; a.length > i; i++) {
+
+                    if (typeof (a[i]) !== "string") {
+
+
+
+                        const url = await generateUploadUrl({}, { throwError: true });
+
+                        if (!url) {
+                            throw new Error("URL not found!")
+                        }
+
+                        const result = await fetch(url, {
+                            method: "POST",
+                            headers: { "Content-type": a[i]!.type },
+                            body: a[i],
+                        });
+
+                        const { storageId } = await result.json();
+
+                        setImageCount(i + 1);
+
+                        currentCode.push(storageId);
+                    };
+                };
+                imagesId.push(...currentCode, ...dataPlateRegister[0]?.image);
+            }
+
+            updateRegisterPlate({
+                //@ts-ignore
+                id: dataPlateRegister[0]?._id as Id<"plateRegister">,
+                code: `CH.${form.getValues('item')}`,
+                supplier: form.getValues('supplier'),
+                lot: form.getValues('lot'),
+                invoice: form.getValues('invoice'),
+                rir: form.getValues('rir'),
+                hardnessOne: form.getValues('hardnessOne'),
+                hardnessTwo: form.getValues('hardnessTwo'),
+                hardnessThree: form.getValues('hardnessThree'),
+                qualityMember: userData?.name,
+                image: imagesId as any,
+            }, {
+                onSuccess: () => {
+                    toastHot.success('Register updated!', {
+                        style: {
+                            border: '5px solid #fff',
+                            padding: '16px',
+                            color: 'white',
+                            background: '#f0b70c'
+                        },
+                        iconTheme: {
+                            primary: 'white',
+                            secondary: '#f0b70c',
+                        },
+                    });
+                    form.clearErrors();
+                    setIsLoading(false);
+                    setImageCount("");
+                    form.reset({
+                        item: '',
+                        supplier: 'Fornecedor',
+                        lot: '',
+                        invoice: '',
+                        rir: '',
+                        hardnessOne: '',
+                        hardnessTwo: '',
+                        hardnessThree: undefined,
+                    });
+                    setImages([]);
+                    a = [];
+                    handleEditForm.onClose();
+
+                },
+                onError: () => {
+                    toastHot.error('Register failed to update!', {
+                        style: {
+                            border: '5px solid #fff',
+                            padding: '16px',
+                            color: 'white',
+                            background: 'red'
+                        },
+                        iconTheme: {
+                            primary: 'white',
+                            secondary: 'red',
+                        },
+                    });
+                }
+            });
+            setIsLoading(false);
+        } catch (error) {
+            console.log(error);
+        } finally {
+            setIsLoading(false);
+            form.reset({
+                item: '',
+                supplier: 'Fornecedor',
+                lot: '',
+                invoice: '',
+                rir: '',
+                hardnessOne: '',
+                hardnessTwo: '',
+                hardnessThree: '',
+            });
+            setImages([]);
+            a = [];
+            handleEditForm.onClose
+        }
+    };
+
+    console.log("imagesID", imagesId);
 
     return (
         <>
             <Form {...form}>
-                <form onSubmit={onSubmit}>
+                <form onSubmit={handleEditForm.id === undefined ? onSubmit : onUpdate}>
                     <TabsContent value={tab}>
                         <Card>
                             <CardHeader>
@@ -445,15 +623,15 @@ export const FormPlate: React.FC<FormPlateProps> = ({ tab, id }) => {
                                         </div>
                                         <aside>
                                             <ul className='flex justify-center align-middle items-center'>
-                                                {
+                                                {a &&
                                                     //@ts-ignore
-                                                    images.map((img: File, index: number) => (
+                                                    a.map((img: File, index: number) => (
                                                         <>
                                                             <div >
                                                                 <Image
                                                                     className='m-1 aspect-square object-cover rounded hover:scale-150 transition'
                                                                     key={index}
-                                                                    src={URL.createObjectURL(img)}
+                                                                    src={typeof (img) === "string" ? img as any : URL.createObjectURL(img)}
                                                                     height={38}
                                                                     width={38}
                                                                     alt='uploaded image'
@@ -472,16 +650,44 @@ export const FormPlate: React.FC<FormPlateProps> = ({ tab, id }) => {
                             </CardContent>
                             <CardFooter>
                                 <div className='flex w-[390px] justify-center '>
-                                    <Button
-                                        disabled={isRegisterPending || isUploading || isLoading}
-                                        type='submit'
-                                        className='flex w-[320px] '
 
-                                    >
-                                        {isLoading
-                                            ? <div className='gap-x-2 flex justify-center items-center'><LoaderIcon className='size-5 animate-spin' />uploading image {imageCount}</div>
-                                            : 'Registrar'}
-                                    </Button>
+                                    {handleEditForm.id === undefined
+                                        ?
+                                        <Button
+                                            disabled={isRegisterPending || isUploading || isLoading}
+                                            type='submit'
+                                            className='flex w-[320px] '
+
+                                        >
+                                            {isLoading
+                                                ? <div className='gap-x-2 flex justify-center items-center'><LoaderIcon className='size-5 animate-spin' />uploading image {imageCount}</div>
+                                                : 'Registrar'
+                                            }
+                                        </Button>
+                                        :
+                                        <div className='flex w-full justify-around items-center'>
+                                            <Button
+                                                variant='outline'
+                                                onClick={() => {
+                                                    handleEditForm.onClose
+                                                    window.location.reload()
+                                                }}
+                                            >
+                                                Cancelar
+                                            </Button>
+                                            <Button
+                                                disabled={isRegisterPending || isUploading || isLoading || isUpdatingRegisterPlate}
+                                                type='submit'
+                                                className='bg-yellow-600 border'
+                                            >
+                                                {isLoading
+                                                    ? <div className='gap-x-2 flex justify-center items-center'><LoaderIcon className='size-5 animate-spin' />uploading image {imageCount}</div>
+                                                    : 'salvar alteração'
+                                                }
+                                            </Button>
+                                        </div>
+                                    }
+
                                 </div>
                             </CardFooter>
                         </Card>
