@@ -9,7 +9,8 @@ const SeeMore = () => {
 
     const handleDrawerSeeMore = useDrawerSeeMore();
     const { data, isLoading } = useGetRegister({ id: handleDrawerSeeMore.id });
-    const [imageOnPreview, setImageOnPreview] = useState(data?.photos[0]);
+    const [imageIndex, setImageIndex] = useState(0);
+    const [imageOnPreview, setImageOnPreview] = useState(data?.photos);
 
     if (!data) {
         return (
@@ -20,18 +21,22 @@ const SeeMore = () => {
     return (
         <ScrollArea>
             <div className='flex  md:flex-wrap  justify-center items-center h-screen w-full snap-y'>
-                <div className='flex flex-col justify-start h-full '>
+                <div className='flex flex-col justify-start h-full'>
                     {data?.photos.map((photo: any, index: any) => (
-                        <Image
-                            key={index}
-                            alt='ainImage'
-                            width={100}
-                            height={100}
-                            src={photo}
-                            priority
-                            className='rounded-sm m-2 border '
-                            onClick={() => { setImageOnPreview(photo) }}
-                        />
+                        <div
+                            className='h-20 flex justify-center'
+                            key={index}>
+                            <Image
+                                alt='ainImage'
+                                width={70}
+                                height={90}
+                                src={photo}
+                                sizes="(min-width: 808px) 50vw, 100vw"
+                                priority
+                                className='rounded-sm m-2 hover:scale-125 transition'
+                                onClick={() => { setImageIndex(index) }}
+                            />
+                        </div>
                     ))}
                 </div>
                 <div className='h-full mt-3'>
@@ -39,7 +44,7 @@ const SeeMore = () => {
                         alt='ainImage'
                         width={490}
                         height={500}
-                        src={!imageOnPreview ? data?.photos[0] : imageOnPreview}
+                        src={!imageOnPreview ? data?.photos[imageIndex] : imageOnPreview}
                         priority
                         className='rounded-sm'
                         quality={100}
