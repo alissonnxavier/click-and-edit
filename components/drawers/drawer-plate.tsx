@@ -66,7 +66,7 @@ export function DrawerPlate() {
                         </Button>
                     </div>
                 }
-                <div>
+                <div className="w-screen ">
                     <DataTableNew
                         tableName="Inspeção de chapas"
                         searchKey="code"
