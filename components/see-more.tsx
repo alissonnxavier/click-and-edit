@@ -20,8 +20,8 @@ const SeeMore = () => {
 
     return (
         <ScrollArea>
-            <div className='flex  md:flex-wrap  justify-center items-center h-screen w-full snap-y'>
-                <div className='flex flex-col justify-start h-full'>
+            <div className='flex flex-wrap justify-center items-center h-screen w-full snap-y gap-2'>
+                <div className='flex justify-start sm:flex-row xl:flex-col md:flex-col md:h-full md:justify-start xl:h-full'>
                     {data?.photos.map((photo: any, index: any) => (
                         <div
                             className='h-20 flex justify-center'
@@ -39,21 +39,23 @@ const SeeMore = () => {
                         </div>
                     ))}
                 </div>
-                <div className='h-full mt-3'>
+                <div className='flex flex-col  justify-start  xl:h-full  mt-3 h-80 md:h-full'>
                     <Image
                         alt='ainImage'
-                        width={490}
-                        height={500}
+                        width={400}
+                        height={350}
                         src={!imageOnPreview ? data?.photos[imageIndex] : imageOnPreview}
                         priority
                         className='rounded-sm'
                         quality={100}
                     />
                 </div>
-                <div className='h-full m-2 mt-5 md:mt-0 md:ml-0'>
-                    <InfoCard
-                        data={data}
-                    />
+                <div className='h-full mt-56 xl:mt-0 md:mt-0'>
+                    <div className=''>
+                        <InfoCard
+                            data={data}
+                        />
+                    </div>
                 </div>
             </div>
         </ScrollArea>
