@@ -24,16 +24,16 @@ const SeeMore = () => {
                 <div className='flex justify-start sm:flex-row xl:flex-col md:flex-col md:h-full md:justify-start xl:h-full'>
                     {data?.photos.map((photo: any, index: any) => (
                         <div
-                            className='h-20 flex justify-center'
+                            className='h-20 w-20 flex justify-center'
                             key={index}>
                             <Image
                                 alt='ainImage'
                                 width={70}
-                                height={90}
+                                height={70}
                                 src={photo}
                                 sizes="(min-width: 808px) 50vw, 100vw"
                                 priority
-                                className='rounded-sm m-2 hover:scale-125 transition'
+                                className='rounded-sm m-2 hover:scale-125 transition object-cover'
                                 onClick={() => { setImageIndex(index) }}
                             />
                         </div>
@@ -46,7 +46,7 @@ const SeeMore = () => {
                         height={350}
                         src={!imageOnPreview ? data?.photos[imageIndex] : imageOnPreview}
                         priority
-                        className='rounded-sm'
+                        className='rounded-sm object-contain'
                         quality={100}
                     />
                 </div>
