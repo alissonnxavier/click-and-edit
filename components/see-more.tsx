@@ -21,10 +21,10 @@ const SeeMore = () => {
     return (
         <ScrollArea>
             <div className='flex flex-wrap justify-center items-center h-screen w-full snap-y gap-2'>
-                <div className='flex justify-start sm:flex-row xl:flex-col md:flex-col md:h-full md:justify-start xl:h-full'>
+                <div className='flex justify-start sm:flex-row sm:flex-wrap xl:flex-col md:flex-col md:h-full md:justify-start xl:h-full'>
                     {data?.photos.map((photo: any, index: any) => (
                         <div
-                            className='h-20 w-20 flex justify-center'
+                            className='h-20 flex justify-center'
                             key={index}>
                             <Image
                                 alt='ainImage'
